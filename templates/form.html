@@ -1,0 +1,14 @@
+{% extends "base.html" %}{% block content %}
+<h1>Новая кампания</h1>
+<form method="post" action="/campaigns">
+<input type="hidden" name="token" value="{{ token }}">
+{% if error %}<p role="alert">{{ error }}</p>{% endif %}
+<label for="name">Название кампании</label>
+<input id="name" name="name" maxlength="160" required value="{{ name|default('') }}" placeholder="Например, Australia · Ноябрь">
+<label for="country">Страна для редиректа на Google</label>
+<select id="country" name="country" required><option value="">Выберите страну</option>{% for code, title in countries %}<option value="{{ code }}"{% if country == code %} selected{% endif %}>{{ code }} · {{ title }}</option>{% endfor %}</select>
+<label for="offer">Оффер для остальных посетителей</label>
+<input name="offer" id="offer" list="offers" required autocomplete="off" value="{% if selected is defined %}{{ selected }}{% elif options|length == 1 %}{{ options[0].id }} · {{ options[0].name }}{% endif %}" placeholder="Поиск по ID или названию">
+<datalist id="offers">{% for o in options %}<option value="{{ o.id }} · {{ o.name }}"></option>{% endfor %}</datalist>
+<button type="submit"{% if not options %} disabled{% endif %}>Создать кампанию</button>
+</form>{% endblock %}

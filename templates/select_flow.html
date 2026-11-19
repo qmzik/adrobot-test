@@ -1,0 +1,11 @@
+{% extends "base.html" %}{% block title %}Редактор офферов{% endblock %}{% block content %}
+<h1>Редактор офферов</h1>
+<form method="get" action="/editor"><label for="campaign">ID существующей кампании</label>
+<input type="number" min="1" required name="campaign_id" id="campaign" value="{{ campaign_id or '' }}">
+<button>Найти потоки</button></form>
+{% if error %}<p role="alert">{{ error }}</p>{% endif %}
+{% if flows %}<form method="post" action="/editor/load">
+<input type="hidden" name="campaign_id" value="{{ campaign_id }}">
+<label for="stream">Поток с офферами</label><select id="stream" name="stream_id">
+{% for s in flows %}<option value="{{ s.id }}">{{ s.name }} · #{{ s.id }}</option>{% endfor %}</select>
+<button>Загрузить из Keitaro</button></form>{% endif %}{% endblock %}

@@ -1,0 +1,12 @@
+{% extends "base.html" %}{% block title %}{{ c.name }}{% endblock %}{% block content %}
+<p class="status">{{ 'Настройки подтверждены' if c.status == 'verified' else 'Создание не завершено' }}</p>
+<h1>{{ c.name }}</h1>
+{% if c.campaign_id %}<p><a href="{{ host }}/admin/?object=campaigns.edit&amp;id={{ c.campaign_id }}">Открыть кампанию #{{ c.campaign_id }} в Keitaro ↗</a></p>{% endif %}
+{% if c.offers_id %}<p><a href="/editor?campaign_id={{ c.campaign_id }}">Редактировать офферы кампании</a></p>{% endif %}
+<section><h2>Потоки при создании</h2><ol>
+<li><strong>{{ c.country }} → Google</strong><small>{{ 'Поток #' ~ c.geo_id if c.geo_id else 'Ожидает создания' }}</small></li>
+<li><strong>Остальные страны → оффер #{{ c.offer }}</strong><small>{{ 'Поток #' ~ c.offers_id if c.offers_id else 'Ожидает создания' }}{% if c.status == 'verified' %} · 100% трафика потока{% endif %}</small></li>
+</ol></section>
+{% if c.status != 'verified' %}<p role="alert">{{ c.error or 'Проверка не завершена.' }}</p>
+<form action="/campaigns" method="post">{% for key, value in [('token',c.token),('name',c.name),('country',c.country),('offer',c.offer)] %}<input type="hidden" name="{{ key }}" value="{{ value }}">{% endfor %}<button>Повторить проверку и создание</button></form>{% endif %}
+<p><a href="/">Новая кампания</a></p>{% endblock %}

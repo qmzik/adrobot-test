@@ -1,0 +1,32 @@
+:root { font-family: Inter, "Segoe UI", sans-serif; color: #1b302d; background: #f5f7f4; }
+* { box-sizing: border-box; }
+body { margin: 0; }
+header { display: flex; align-items: baseline; gap: 22px; padding: 19px clamp(20px,6vw,90px); background: #fff; border-bottom: 1px solid #d6ded9; }
+header > span, small { color: #52665e; }
+.brand { color: #193a32; font: bold 26px Georgia, serif; text-decoration: none; }
+.brand span { color: #c35b28; }
+main { max-width: 680px; margin: clamp(32px,8vh,88px) auto; padding: 0 20px; }
+h1 { font: 500 clamp(36px,6vw,54px)/1.12 Georgia, serif; letter-spacing: -.035em; overflow-wrap: anywhere; }
+form, section { background: white; padding: clamp(20px,5vw,36px); border: 1px solid #ccd6cf; border-radius: 12px; }
+label { display: block; margin-bottom: 8px; font-weight: 600; }
+input:not([type=hidden]), select { display: block; width: 100%; min-height: 46px; font: inherit; border-radius: 5px; border: 1px solid #83948c; padding: 10px 12px; margin-bottom: 24px; background: white; color: inherit; }
+button { font: inherit; font-weight: 600; color: white; background: #215c49; border: 0; border-radius: 5px; padding: 14px 22px; cursor: pointer; }
+button:disabled { opacity: .55; cursor: default; }
+:focus-visible { outline: 3px solid #b45a21; outline-offset: 3px; }
+a { color: #215c49; }
+[role=alert] { padding: 12px; background: #fff0e4; color: #772e10; }
+li { padding: 8px 0; }
+small { display: block; margin-top: 4px; }
+.status { font-weight: 600; color: #215c49; }
+h2 { margin-top: 0; }
+form + form, section + form { margin-top: 16px; }
+.offer-row { padding: 18px 0; border-top: 1px solid #d6ded9; }
+.offer-row strong { overflow-wrap: anywhere; }
+.offers form { padding: 0; border: 0; }
+.offers > form { padding-top: 20px; border-top: 1px solid #d6ded9; }
+.offer-row form { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.offer-row label, .offer-row input[type=number] { margin: 0; }
+.offer-row input[type=number] { width: 5rem; }
+.offer-row button, button.secondary { background: #e7efea; color: #214f40; }
+.offer-row button { font-size: .9rem; }
+.secondary { margin-block: 4px; }

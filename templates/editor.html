@@ -1,0 +1,31 @@
+{% extends "base.html" %}{% block title %}Офферы · {{ d.title }}{% endblock %}
+{% macro revision() %}<input type="hidden" name="revision" value="{{ d.revision }}">{% endmacro %}
+{% block content %}
+<p><a href="/editor?campaign_id={{ d.campaign_id }}">Кампания #{{ d.campaign_id }}</a> / Поток #{{ d.stream_id }}</p>
+<h1>{{ d.title }}</h1>
+{% if d.published %}<p class="status" role="status">Опубликовано. Состав и доли подтверждены через API.</p>
+{% else %}<p class="status">Черновик офферов</p>{% endif %}
+{% if error %}<p role="alert">{{ error }}</p>{% endif %}
+<section class="offers"><h2>Распределение трафика</h2>
+{% for row in d.rows %}
+<div class="offer-row"><strong>{{ d.catalog.get(row.offer_id|string, 'Оффер') }} · #{{ row.offer_id }}</strong>
+<p>{% if row.removed %}Помечен к удалению{% elif row.state != 'active' %}Неактивен{% else %}{{ row.share }}%{% if row.pinned %} · Доля закреплена{% endif %}{% endif %}</p>
+<form action="/editor/{{ d.token }}" method="post">{{ revision() }}
+<input type="hidden" name="offer_id" value="{{ row.offer_id }}">
+{% if row.removed %}<button name="action" value="restore">Вернуть</button>
+{% else %}
+{% if row.state == 'active' %}<label for="share-{{ row.offer_id }}">Доля, %</label>
+<input id="share-{{ row.offer_id }}" name="share" type="number" min="0" max="100" value="{{ row.share }}">
+<button name="action" value="pin">Закрепить долю</button>
+{% if row.pinned %}<button name="action" value="unpin" formnovalidate>Снять закрепление</button>{% endif %}{% endif %}
+<button name="action" value="remove" formnovalidate>Убрать из потока</button>{% endif %}
+</form></div>{% endfor %}
+{% if available %}<form action="/editor/{{ d.token }}" method="post">{{ revision() }}
+<label for="new-offer">Добавить оффер по ID или названию</label><input name="offer_id" id="new-offer" list="choices" required pattern="[0-9]+">
+<datalist id="choices">{% for id,name in available.items() %}<option value="{{ id }}">{{ name }}</option>{% endfor %}</datalist>
+<button name="action" value="add">Добавить</button></form>{% endif %}
+</section>
+<form action="/editor/{{ d.token }}" method="post">{{ revision() }}
+<button name="action" value="publish">Опубликовать в Keitaro</button>
+<button class="secondary" name="action" value="cancel">Отменить правки</button></form>
+{% endblock %}
