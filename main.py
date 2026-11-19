@@ -20,6 +20,7 @@ app.mount("/static", StaticFiles(directory=ROOT / "static"), name="static")
 templates = Jinja2Templates(directory=ROOT / "templates")
 countries = sorted((c.alpha_2, c.name) for c in pycountry.countries)
 Text = Annotated[str, Form()]
+CAMPAIGN_PREFIX = "test_lebedev_"
 
 
 def page(request, *, error=None, status=200, **values):
@@ -51,8 +52,10 @@ def create(request: Request, token: Annotated[UUID, Form()], name: Text = "",
     check_origin(request)
     token = token.hex
     name, country = name.strip(), country.strip().upper()
+    suffix = name.removeprefix(CAMPAIGN_PREFIX).strip()
+    full_name = CAMPAIGN_PREFIX + suffix
     offer_id = offer.partition(" · ")[0].strip()
-    if not (0 < len(name) <= 160 and pycountry.countries.get(alpha_2=country)
+    if not (suffix and len(full_name) <= 160 and pycountry.countries.get(alpha_2=country)
             and offer_id.isascii() and offer_id.isdigit() and 0 < len(offer_id) <= 10):
         return page(request, error="Введите название, выберите страну и оффер из списка.",
                     status=422, token=token, name=name, country=country, selected=offer)
@@ -60,11 +63,11 @@ def create(request: Request, token: Annotated[UUID, Form()], name: Text = "",
         c = db.get(Campaign, token)
         recovering = c is not None
         if not c:
-            c = Campaign(token=token, name=name, country=country, offer=int(offer_id),
+            c = Campaign(token=token, name=full_name, country=country, offer=int(offer_id),
                          settings=kt.settings(), status="pending")
             db.add(c)
             db.commit()
-        elif (name, country, int(offer_id)) != (c.name, c.country, c.offer):
+        elif c.name not in (name, full_name) or (country, int(offer_id)) != (c.country, c.offer):
             raise HTTPException(409, "Заявка уже отправлена с другими параметрами.")
         if c.status != "verified":
             try:

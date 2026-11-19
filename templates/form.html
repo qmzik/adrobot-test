@@ -4,7 +4,8 @@
 <input type="hidden" name="token" value="{{ token }}">
 {% if error %}<p role="alert">{{ error }}</p>{% endif %}
 <label for="name">Название кампании</label>
-<input id="name" name="name" maxlength="160" required value="{{ name|default('') }}" placeholder="Например, Australia · Ноябрь">
+<small id="name-help">Префикс test_lebedev_ добавляется автоматически.</small>
+<input id="name" name="name" aria-describedby="name-help" maxlength="160" required value="{{ name|default('') }}" placeholder="Например, campaign1">
 <label for="country">Страна для редиректа на Google</label>
 <select id="country" name="country" required><option value="">Выберите страну</option>{% for code, title in countries %}<option value="{{ code }}"{% if country == code %} selected{% endif %}>{{ code }} · {{ title }}</option>{% endfor %}</select>
 <label for="offer">Оффер для остальных посетителей</label>

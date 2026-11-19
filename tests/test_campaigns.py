@@ -39,13 +39,16 @@ def site(tmp_path, monkeypatch):
     return client, remote, dict(token=token, name="April", country="au", offer="41 · Demo")
 
 
-def test_create_and_resubmit(site):
+@pytest.mark.parametrize("name", ["April", "test_lebedev_April"])
+def test_create_and_resubmit(site, name):
     client, remote, data = site
+    data["name"] = name
     for _ in range(2):
         result = client.post("/campaigns", data=data)
         assert result.status_code == 200
         assert "Настройки подтверждены" in result.text
     assert len(remote["campaigns"]) == 1
+    assert remote["campaigns"][0]["name"] == "test_lebedev_April"
     geo, fallback = remote["streams"]
     assert geo["filters"] == [dict(name="country", mode="accept", payload=["AU"])]
     assert geo["action_payload"] == "https://www.google.com/"
